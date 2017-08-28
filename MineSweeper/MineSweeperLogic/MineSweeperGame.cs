@@ -13,9 +13,14 @@ namespace MineSweeperLogic
 
         public MineSweeperGame(int sizeX, int sizeY, int nrOfMines, IServiceBus bus)
         {
-
+            this.SizeY = sizeY;
+            this.SizeX = sizeX;
+            this.NumberOfMines = nrOfMines;
+            ResetBoard();
+            State=GameState.Playing;
         }
 
+        
         public int PosX { get; private set; }
         public int PosY { get; private set; }
         public int SizeX { get; }
@@ -73,6 +78,7 @@ namespace MineSweeperLogic
 
         public void ResetBoard()
         {
+            State = GameState.Playing;
         }
 
         public void DrawBoard()
@@ -98,6 +104,69 @@ namespace MineSweeperLogic
         }
 
         #endregion
+        //public void ConstructorShouldSetSize()
+        //{
+            
+        //    var game = new MineSweeperGame(10, 10, 10, new ServiceBus());
+            
+           
+        //   .AreEqual(game.SizeX, 10);
+        //    .AreEqual(game.SizeY, 10);
+        //}
+
+       
+        //public void ConstructorShouldSetCorrectSizeX()
+        //{
+            
+        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+
+            
+        //   .AreEqual(game.SizeX, 5);
+        //}
+
+
+    //public void ConstructorShouldSetCorrectSizeY()
+    //{
+
+    //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+
+
+    //    .AreEqual(game.SizeY, 6);
+    //}
+
+
+    //public void ConstructorShouldSetCorrectMineCount()
+    //{
+
+    //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+
+
+    //    .AreEqual(game.NumberOfMines, 10);
+    //}
+
+
+    //public void ConstructorShouldStartInStatePlaying()
+    //{
+
+    //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+
+
+    //    Assert.AreEqual(game.State, GameState.Playing);
+    //}
+
+
+    //public void ConstructorShouldCallResetBoard()
+    {
+
+        var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+
+
+        var coord = game.GetCoordinate(3, 3);
+
+        ResetBoard
+
+
 
     }
-}
+        
+;}
