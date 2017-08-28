@@ -4,6 +4,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace MineSweeperLogic
 {
@@ -12,6 +13,7 @@ namespace MineSweeperLogic
 
         public MineSweeperGame(int sizeX, int sizeY, int nrOfMines, IServiceBus bus)
         {
+
         }
 
         public int PosX { get; private set; }
@@ -20,6 +22,9 @@ namespace MineSweeperLogic
         public int SizeY { get; }
         public int NumberOfMines { get; }
         public GameState State { get; private set; }
+        public PositionInfo PositionInfo;
+        public MineSweeperGame Game;
+
 
         public PositionInfo GetCoordinate(int x, int y)
         {
@@ -32,6 +37,20 @@ namespace MineSweeperLogic
 
         public void ClickCoordinate()
         {
+            var positionOfPlayer = Game.GetCoordinate(PosX, PosY);
+            if (PositionInfo.IsOpen == true)
+            {
+                return;
+            }
+            else
+            {
+                PositionInfo.IsOpen = true;
+            }
+            if (PositionInfo.HasMine == true)
+            {
+                State = GameState.Lost;
+            }
+
         }
 
         public void ResetBoard()
