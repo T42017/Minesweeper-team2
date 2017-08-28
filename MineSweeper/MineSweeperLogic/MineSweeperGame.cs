@@ -15,7 +15,8 @@ namespace MineSweeperLogic
             this.SizeY = sizeY;
             this.SizeX = sizeX;
             this.NumberOfMines = nrOfMines;
-            int ResetBoard;
+            ResetBoard();
+            State=GameState.Playing;
         }
 
         
@@ -41,6 +42,7 @@ namespace MineSweeperLogic
 
         public void ResetBoard()
         {
+            State = GameState.Playing;
         }
 
         public void DrawBoard()
