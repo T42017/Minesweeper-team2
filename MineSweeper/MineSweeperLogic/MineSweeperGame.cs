@@ -22,7 +22,6 @@ namespace MineSweeperLogic
         public int SizeY { get; }
         public int NumberOfMines { get; }
         public GameState State { get; private set; }
-        public PositionInfo PositionInfo;
         public MineSweeperGame Game;
 
 
@@ -38,15 +37,15 @@ namespace MineSweeperLogic
         public void ClickCoordinate()
         {
             var positionOfPlayer = Game.GetCoordinate(PosX, PosY);
-            if (PositionInfo.IsOpen == true)
+            if (positionOfPlayer.IsOpen == true)
             {
                 return;
             }
             else
             {
-                PositionInfo.IsOpen = true;
+                positionOfPlayer.IsOpen = true;
             }
-            if (PositionInfo.HasMine == true)
+            if (positionOfPlayer.HasMine == true)
             {
                 State = GameState.Lost;
             }
