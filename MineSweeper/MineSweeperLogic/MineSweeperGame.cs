@@ -13,30 +13,29 @@ namespace MineSweeperLogic
 
         public MineSweeperGame(int sizeX, int sizeY, int nrOfMines, IServiceBus bus)
         {
-            _bus = bus;
-            this.SizeY = sizeY;
-            this.SizeX = sizeX;
+            _board = new PositionInfo[sizeX,sizeY];
             this.NumberOfMines = nrOfMines;
-            ResetBoard();
-            State = GameState.Playing;
             NumberOfOpenTiles = 0;
             NumberOfTiles = sizeY * sizeX;
             PosX = 0;
             PosY = 0;
+            _bus = bus;
+            ResetBoard();
+            State = GameState.Playing;           
         }
 
         private PositionInfo[,] _board;
         private PositionInfo _coords;
         private IServiceBus _bus;
+        private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
-        public int SizeX { get; }
-        public int SizeY { get; }
+        public int SizeX => _board.GetLength(0);
+        public int SizeY => _board.GetLength(1);
         public int NumberOfMines { get; }
         public int NumberOfTiles { get; }
         public int NumberOfOpenTiles { get; private set; }
         public GameState State { get; private set; }
-
 
         public PositionInfo GetCoordinate(int x, int y)
         {
@@ -56,9 +55,18 @@ namespace MineSweeperLogic
             {
                 return;
             }
-            positionOfPlayer.IsOpen = true;
-            NumberOfOpenTiles++;
-            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+
+            if (positionOfPlayer.IsFlagged)
+            {
+                return;
+            }
+
+            if (positionOfPlayer.IsOpen == false)
+            {
+                positionOfPlayer.IsOpen = true;
+                NumberOfOpenTiles++;
+                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+            }
 
             if (positionOfPlayer.HasMine)
             {
@@ -70,27 +78,12 @@ namespace MineSweeperLogic
                     }
                 }
                 State = GameState.Lost;
-            }
-            else
-            {
-                positionOfPlayer.IsOpen = true;
-                NumberOfOpenTiles++;
-                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
-            }
-
-            if (positionOfPlayer.IsFlagged)
-            {
-                return;
-            }
-            positionOfPlayer.IsOpen = true;
-            NumberOfOpenTiles++;
-            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+            }   
         }
 
         public void ResetBoard()
         {
             State = GameState.Playing;
-            _board = new PositionInfo[SizeX, SizeY];
 
             for (int x = 0; x < SizeX; x++)
             {
@@ -105,9 +98,24 @@ namespace MineSweeperLogic
                         Y = y,
                         X = x
                     };
-
                 }
             }
+            PlacementOfMines();
+        }
+
+        public void PlacementOfMines ()
+        {
+            int mines = 0;
+            do
+            {
+                var x = _bus.Next(SizeX);
+                var y = _bus.Next(SizeY);
+
+                if (GetCoordinate(x, y).HasMine) continue;
+                GetCoordinate(x, y).HasMine = true;
+                mines++;
+            }
+            while (mines < NumberOfMines);
         }
 
         public void DrawBoard()
