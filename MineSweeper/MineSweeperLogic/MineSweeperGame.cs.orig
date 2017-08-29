@@ -13,39 +13,41 @@ namespace MineSweeperLogic
 
         public MineSweeperGame(int sizeX, int sizeY, int nrOfMines, IServiceBus bus)
         {
+<<<<<<< HEAD
             _bus = bus;
             this.SizeY = sizeY;
             this.SizeX = sizeX;
+=======
+            _board = new PositionInfo[sizeX,sizeY];
+>>>>>>> origin/feature-Filip
             this.NumberOfMines = nrOfMines;
-            ResetBoard();
-            State = GameState.Playing;
             NumberOfOpenTiles = 0;
             NumberOfTiles = sizeY * sizeX;
             PosX = 0;
             PosY = 0;
+            _bus = bus;
+            ResetBoard();
+            State = GameState.Playing;           
         }
 
         private PositionInfo[,] _board;
 <<<<<<< HEAD
-        private IServiceBus _bus;
-        public int PosX { get; private set; }
-        public int PosY { get; private set; }
+        private PositionInfo _coords;
 =======
-
+>>>>>>> origin/feature-Filip
+        private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
->>>>>>> origin/develop
-        public int SizeX { get; }
-        public int SizeY { get; }
+        public int SizeX => _board.GetLength(0);
+        public int SizeY => _board.GetLength(1);
         public int NumberOfMines { get; }
         public int NumberOfTiles { get; }
         public int NumberOfOpenTiles { get; private set; }
         public GameState State { get; private set; }
 
-
         public PositionInfo GetCoordinate(int x, int y)
         {
-            return _board[x,y];
+            return _board[x, y];
         }
 
         public void FlagCoordinate()
@@ -61,9 +63,18 @@ namespace MineSweeperLogic
             {
                 return;
             }
-            positionOfPlayer.IsOpen = true;
-            NumberOfOpenTiles++;
-            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+
+            if (positionOfPlayer.IsFlagged)
+            {
+                return;
+            }
+
+            if (positionOfPlayer.IsOpen == false)
+            {
+                positionOfPlayer.IsOpen = true;
+                NumberOfOpenTiles++;
+                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+            }
 
             if (positionOfPlayer.HasMine)
             {
@@ -75,29 +86,18 @@ namespace MineSweeperLogic
                     }
                 }
                 State = GameState.Lost;
-            }
-            else
-            {
-                positionOfPlayer.IsOpen = true;
-                NumberOfOpenTiles++;
-                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
-            }
-
-            if (positionOfPlayer.IsFlagged)
-            {
-                return;
-            }
-            positionOfPlayer.IsOpen = true;
-            NumberOfOpenTiles++;
-            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+            }   
         }
 
         public void ResetBoard()
         {
             State = GameState.Playing;
-            _board= new PositionInfo[SizeX,SizeY];
+<<<<<<< HEAD
+            _board = new PositionInfo[SizeX, SizeY];
+=======
+>>>>>>> origin/feature-Filip
 
-            for(int x= 0; x<SizeX; x++)
+            for (int x = 0; x < SizeX; x++)
             {
                 for (int y = 0; y < SizeY; y++)
                 {
@@ -110,9 +110,24 @@ namespace MineSweeperLogic
                         Y = y,
                         X = x
                     };
-
                 }
             }
+            PlacementOfMines();
+        }
+
+        public void PlacementOfMines ()
+        {
+            int mines = 0;
+            do
+            {
+                var x = _bus.Next(SizeX);
+                var y = _bus.Next(SizeY);
+
+                if (GetCoordinate(x, y).HasMine) continue;
+                GetCoordinate(x, y).HasMine = true;
+                mines++;
+            }
+            while (mines < NumberOfMines);
         }
 
         public void DrawBoard()
@@ -121,12 +136,29 @@ namespace MineSweeperLogic
             {
                 for (int x = 0; x < SizeY; x++)
                 {
-                    _bus.Write(" ? ");
+                    if (_board[x, y].IsOpen)
+                    {
+                        if (x == PosX && y == PosY)
+                            _bus.Write("O ", ConsoleColor.DarkCyan);
+                        else
+                            _bus.Write("O ");
+                    }
+                    else
+                    {
+                        if (x == PosX && y == PosY)
+                            _bus.Write("? ", ConsoleColor.Cyan);
+                        else
+                            _bus.Write("? ");
+                    }
                 }
                 _bus.WriteLine();
-            }
-        }
 
+            }
+          
+            
+        }
+        //bomb ¤
+        //unopened ?
         #region MoveCursor Methods
 
         public void MoveCursorUp()
@@ -166,10 +198,5 @@ namespace MineSweeperLogic
         }
 
         #endregion
-<<<<<<< HEAD
-
-        
-=======
->>>>>>> origin/develop
     }
 }
