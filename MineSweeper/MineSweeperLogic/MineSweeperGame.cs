@@ -106,18 +106,38 @@ namespace MineSweeperLogic
 
         public void MoveCursorUp()
         {
+            PosY -= 1;
+            if (PosY <= SizeY * 0)
+            {
+                PosY += 1;
+            }
         }
 
         public void MoveCursorDown()
         {
+            PosY += 1;
+            if (PosY >= SizeY)
+            {
+                PosY -= 1;
+            }
         }
 
         public void MoveCursorLeft()
         {
+            PosX -= 1;
+            if (PosX <= SizeX * 0)
+            {
+                PosX += 1;
+            }
         }
 
         public void MoveCursorRight()
         {
+            PosX += 1;
+            if (PosX >= SizeX)
+            {
+                PosX -= 1;
+            }
         }
 
         #endregion
