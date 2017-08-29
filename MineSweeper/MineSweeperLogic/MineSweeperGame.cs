@@ -27,7 +27,6 @@ namespace MineSweeperLogic
         private PositionInfo[,] _board;
         private PositionInfo _coords;
         private IServiceBus _bus;
-        private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int SizeX => _board.GetLength(0);
