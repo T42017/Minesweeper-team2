@@ -59,7 +59,7 @@ namespace MineSweeperTests
             //Act
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write("? ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Times(1));
+            A.CallTo(() => bus.Write("? ", ConsoleColor.Cyan)).MustHaveHappened(Repeated.Exactly.Times(1));
         }
 
         [TestMethod]
@@ -73,7 +73,7 @@ namespace MineSweeperTests
             game.ClickCoordinate();
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write(". ")).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => bus.Write("O ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Times(3));
         }
 
         [TestMethod]
@@ -87,7 +87,7 @@ namespace MineSweeperTests
             game.ClickCoordinate();
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write(". ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Times(1));
+            A.CallTo(() => bus.Write("O ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Times(1));
         }
 
 

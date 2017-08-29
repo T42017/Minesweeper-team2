@@ -26,6 +26,7 @@ namespace MineSweeperLogic
         }
 
         private PositionInfo[,] _board;
+        private PositionInfo _coords;
         private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
@@ -39,7 +40,7 @@ namespace MineSweeperLogic
 
         public PositionInfo GetCoordinate(int x, int y)
         {
-            return _board[x,y];
+            return _board[x, y];
         }
 
         public void FlagCoordinate()
@@ -89,9 +90,9 @@ namespace MineSweeperLogic
         public void ResetBoard()
         {
             State = GameState.Playing;
-            _board= new PositionInfo[SizeX,SizeY];
+            _board = new PositionInfo[SizeX, SizeY];
 
-            for(int x= 0; x<SizeX; x++)
+            for (int x = 0; x < SizeX; x++)
             {
                 for (int y = 0; y < SizeY; y++)
                 {
@@ -115,12 +116,29 @@ namespace MineSweeperLogic
             {
                 for (int x = 0; x < SizeY; x++)
                 {
-                    _bus.Write(" ? ");
+                    if (_board[x, y].IsOpen)
+                    {
+                        if (x == PosX && y == PosY)
+                            _bus.Write("O ", ConsoleColor.DarkCyan);
+                        else
+                            _bus.Write("O ");
+                    }
+                    else
+                    {
+                        if (x == PosX && y == PosY)
+                            _bus.Write("? ", ConsoleColor.Cyan);
+                        else
+                            _bus.Write("? ");
+                    }
                 }
                 _bus.WriteLine();
-            }
-        }
 
+            }
+          
+            
+        }
+        //bomb ¤
+        //unopened ?
         #region MoveCursor Methods
 
         public void MoveCursorUp()
@@ -161,3 +179,4 @@ namespace MineSweeperLogic
 
         #endregion
     }
+}

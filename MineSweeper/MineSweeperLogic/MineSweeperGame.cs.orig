@@ -13,6 +13,7 @@ namespace MineSweeperLogic
 
         public MineSweeperGame(int sizeX, int sizeY, int nrOfMines, IServiceBus bus)
         {
+            _bus = bus;
             this.SizeY = sizeY;
             this.SizeX = sizeX;
             this.NumberOfMines = nrOfMines;
@@ -20,15 +21,20 @@ namespace MineSweeperLogic
             State = GameState.Playing;
             NumberOfOpenTiles = 0;
             NumberOfTiles = sizeY * sizeX;
+            PosX = 0;
+            PosY = 0;
         }
 
-<<<<<<< HEAD
         private PositionInfo[,] _board;
-=======
->>>>>>> feature-Filip
-
+<<<<<<< HEAD
+        private IServiceBus _bus;
         public int PosX { get; private set; }
         public int PosY { get; private set; }
+=======
+
+        public int PosX { get; set; }
+        public int PosY { get; set; }
+>>>>>>> origin/develop
         public int SizeX { get; }
         public int SizeY { get; }
         public int NumberOfMines { get; }
@@ -39,11 +45,7 @@ namespace MineSweeperLogic
 
         public PositionInfo GetCoordinate(int x, int y)
         {
-<<<<<<< HEAD
             return _board[x,y];
-=======
-            return GetCoordinate(x, y);
->>>>>>> feature-Filip
         }
 
         public void FlagCoordinate()
@@ -54,19 +56,24 @@ namespace MineSweeperLogic
         {
 
             var positionOfPlayer = GetCoordinate(PosX, PosY);
+
             if (positionOfPlayer.IsOpen)
             {
-                State = GameState.Playing;
+                return;
             }
-            else
-            {
-                positionOfPlayer.IsOpen = true;
-                NumberOfOpenTiles++;
-                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
-            }
+            positionOfPlayer.IsOpen = true;
+            NumberOfOpenTiles++;
+            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
 
             if (positionOfPlayer.HasMine)
             {
+                foreach (var cell in _board)
+                {
+                    if (cell.HasMine)
+                    {
+                        cell.IsOpen = true;
+                    }
+                }
                 State = GameState.Lost;
             }
             else
@@ -78,16 +85,11 @@ namespace MineSweeperLogic
 
             if (positionOfPlayer.IsFlagged)
             {
-                State = GameState.Playing;
+                return;
             }
-            else
-            {
-                positionOfPlayer.IsOpen = true;
-                NumberOfOpenTiles++;
-                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
-            }
-
-
+            positionOfPlayer.IsOpen = true;
+            NumberOfOpenTiles++;
+            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
         }
 
         public void ResetBoard()
@@ -99,111 +101,75 @@ namespace MineSweeperLogic
             {
                 for (int y = 0; y < SizeY; y++)
                 {
-                    _board[x, y] = new PositionInfo();
+                    _board[x, y] = new PositionInfo()
+                    {
+                        HasMine = false,
+                        IsFlagged = false,
+                        IsOpen = false,
+                        NrOfNeighbours = 1,
+                        Y = y,
+                        X = x
+                    };
+
                 }
             }
         }
 
         public void DrawBoard()
         {
-
+            for (int y = 0; y < SizeX; y++)
+            {
+                for (int x = 0; x < SizeY; x++)
+                {
+                    _bus.Write(" ? ");
+                }
+                _bus.WriteLine();
+            }
         }
 
         #region MoveCursor Methods
 
         public void MoveCursorUp()
         {
+            PosY -= 1;
+            if (PosY <= SizeY * 0)
+            {
+                PosY += 1;
+            }
         }
 
         public void MoveCursorDown()
         {
+            PosY += 1;
+            if (PosY >= SizeY)
+            {
+                PosY -= 1;
+            }
         }
 
         public void MoveCursorLeft()
         {
+            PosX -= 1;
+            if (PosX <= SizeX * 0)
+            {
+                PosX += 1;
+            }
         }
 
         public void MoveCursorRight()
         {
+            PosX += 1;
+            if (PosX >= SizeX)
+            {
+                PosX -= 1;
+            }
         }
 
         #endregion
 <<<<<<< HEAD
-      
-=======
 
-        //public void ConstructorShouldSetSize()
-        //{
-
-        //    var game = new MineSweeperGame(10, 10, 10, new ServiceBus());
-
-
-        //   .AreEqual(game.SizeX, 10);
-        //    .AreEqual(game.SizeY, 10);
-        //}
-
-
-        //public void ConstructorShouldSetCorrectSizeX()
-        //{
-
-        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
-
-
-        //   .AreEqual(game.SizeX, 5);
-        //}
-
-
-        //public void ConstructorShouldSetCorrectSizeY()
-        //{
-
-        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
-
-
-        //    .AreEqual(game.SizeY, 6);
-        //}
-
-
-        //public void ConstructorShouldSetCorrectMineCount()
-        //{
-
-        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
-
-
-        //    .AreEqual(game.NumberOfMines, 10);
-        //}
-
-
-        //public void ConstructorShouldStartInStatePlaying()
-        //{
-
-        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
-
-
-        //    Assert.AreEqual(game.State, GameState.Playing);
-        //}
-
-
-        ////public void ConstructorShouldCallResetBoard()
-        //{
-
-        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
-
-
-        //    var coord = game.GetCoordinate(3, 3);
-
-        //    ResetBoard
->>>>>>> feature-Filip
-
-
-
-        //}
-    }
-<<<<<<< HEAD
-
-;
-}
-=======
-}
         
-
->>>>>>> feature-Filip
+=======
+>>>>>>> origin/develop
+    }
+}
