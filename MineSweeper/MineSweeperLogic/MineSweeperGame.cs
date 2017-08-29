@@ -17,24 +17,25 @@ namespace MineSweeperLogic
             this.SizeX = sizeX;
             this.NumberOfMines = nrOfMines;
             ResetBoard();
-            State=GameState.Playing;
+            State = GameState.Playing;
+            NumberOfOpenTiles = 0;
+            NumberOfTiles = sizeY * sizeX;
         }
 
-        
+
         public int PosX { get; private set; }
         public int PosY { get; private set; }
         public int SizeX { get; }
         public int SizeY { get; }
         public int NumberOfMines { get; }
         public int NumberOfTiles { get; }
-        public int NumberOfOpenTiles;
+        public int NumberOfOpenTiles { get; private set; }
         public GameState State { get; private set; }
-        public MineSweeperGame Game;
 
 
         public PositionInfo GetCoordinate(int x, int y)
         {
-            return null;
+            return GetCoordinate(x, y);
         }
 
         public void FlagCoordinate()
@@ -43,28 +44,20 @@ namespace MineSweeperLogic
 
         public void ClickCoordinate()
         {
-            
-            var positionOfPlayer = Game.GetCoordinate(PosX, PosY);
-            if (positionOfPlayer.IsOpen == true)
+
+            var positionOfPlayer = GetCoordinate(PosX, PosY);
+            if (positionOfPlayer.IsOpen)
             {
                 State = GameState.Playing;
-                return;
             }
             else
             {
                 positionOfPlayer.IsOpen = true;
                 NumberOfOpenTiles++;
-                //if (NumberOfTiles - NumberOfOpenTiles = NumberOfMines)
-                //{
-                //    State = GameState.Won;
-                //}
-                //else
-                //{
-                //    State = GameState.Playing;
-                //}
+                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
             }
 
-            if (positionOfPlayer.HasMine == true)
+            if (positionOfPlayer.HasMine)
             {
                 State = GameState.Lost;
             }
@@ -72,7 +65,20 @@ namespace MineSweeperLogic
             {
                 positionOfPlayer.IsOpen = true;
                 NumberOfOpenTiles++;
+                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
             }
+
+            if (positionOfPlayer.IsFlagged)
+            {
+                State = GameState.Playing;
+            }
+            else
+            {
+                positionOfPlayer.IsOpen = true;
+                NumberOfOpenTiles++;
+                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+            }
+
 
         }
 
@@ -104,69 +110,72 @@ namespace MineSweeperLogic
         }
 
         #endregion
+
         //public void ConstructorShouldSetSize()
         //{
-            
+
         //    var game = new MineSweeperGame(10, 10, 10, new ServiceBus());
-            
-           
+
+
         //   .AreEqual(game.SizeX, 10);
         //    .AreEqual(game.SizeY, 10);
         //}
 
-       
+
         //public void ConstructorShouldSetCorrectSizeX()
         //{
-            
+
         //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
 
-            
+
         //   .AreEqual(game.SizeX, 5);
         //}
 
 
-    //public void ConstructorShouldSetCorrectSizeY()
-    //{
+        //public void ConstructorShouldSetCorrectSizeY()
+        //{
 
-    //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
-
-
-    //    .AreEqual(game.SizeY, 6);
-    //}
+        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
 
 
-    //public void ConstructorShouldSetCorrectMineCount()
-    //{
-
-    //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+        //    .AreEqual(game.SizeY, 6);
+        //}
 
 
-    //    .AreEqual(game.NumberOfMines, 10);
-    //}
+        //public void ConstructorShouldSetCorrectMineCount()
+        //{
+
+        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
 
 
-    //public void ConstructorShouldStartInStatePlaying()
-    //{
-
-    //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+        //    .AreEqual(game.NumberOfMines, 10);
+        //}
 
 
-    //    Assert.AreEqual(game.State, GameState.Playing);
-    //}
+        //public void ConstructorShouldStartInStatePlaying()
+        //{
+
+        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
 
 
-    //public void ConstructorShouldCallResetBoard()
-    {
-
-        var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+        //    Assert.AreEqual(game.State, GameState.Playing);
+        //}
 
 
-        var coord = game.GetCoordinate(3, 3);
+        ////public void ConstructorShouldCallResetBoard()
+        //{
 
-        ResetBoard
+        //    var game = new MineSweeperGame(5, 6, 10, new ServiceBus());
+
+
+        //    var coord = game.GetCoordinate(3, 3);
+
+        //    ResetBoard
 
 
 
+        //}
     }
+}
         
-;}
+
