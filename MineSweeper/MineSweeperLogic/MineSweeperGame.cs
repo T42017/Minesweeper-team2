@@ -35,7 +35,6 @@ namespace MineSweeperLogic
         public int NumberOfOpenTiles { get; private set; }
         public GameState State { get; private set; }
 
-
         public PositionInfo GetCoordinate(int x, int y)
         {
             return _board[x,y];
@@ -54,9 +53,18 @@ namespace MineSweeperLogic
             {
                 return;
             }
-            positionOfPlayer.IsOpen = true;
-            NumberOfOpenTiles++;
-            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+
+            if (positionOfPlayer.IsFlagged)
+            {
+                return;
+            }
+
+            if (positionOfPlayer.IsOpen == false)
+            {
+                positionOfPlayer.IsOpen = true;
+                NumberOfOpenTiles++;
+                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+            }
 
             if (positionOfPlayer.HasMine)
             {
@@ -68,21 +76,7 @@ namespace MineSweeperLogic
                     }
                 }
                 State = GameState.Lost;
-            }
-            else
-            {
-                positionOfPlayer.IsOpen = true;
-                NumberOfOpenTiles++;
-                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
-            }
-
-            if (positionOfPlayer.IsFlagged)
-            {
-                return;
-            }
-            positionOfPlayer.IsOpen = true;
-            NumberOfOpenTiles++;
-            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+            }   
         }
 
         public void ResetBoard()
@@ -99,11 +93,10 @@ namespace MineSweeperLogic
                         HasMine = false,
                         IsFlagged = false,
                         IsOpen = false,
-                        NrOfNeighbours = 1,
+                        //NrOfNeighbours = 1,
                         Y = y,
                         X = x
                     };
-
                 }
             }
         }
