@@ -31,5 +31,7 @@ namespace MineSweeperLogic
         {
             return rnd.Next(maxValue);
         }
+
+        
     }
 }
