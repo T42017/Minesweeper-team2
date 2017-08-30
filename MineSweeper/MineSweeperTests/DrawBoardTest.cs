@@ -263,7 +263,7 @@ namespace MineSweeperTests
             game.MoveCursorRight();
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write("X ")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => bus.Write("¤ ")).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [TestMethod]
@@ -278,7 +278,7 @@ namespace MineSweeperTests
             game.ClickCoordinate();
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write("X ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => bus.Write("¤ ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [TestMethod]
@@ -293,7 +293,7 @@ namespace MineSweeperTests
             game.MoveCursorRight();
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write("! ")).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => bus.Write("F ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [TestMethod]
@@ -307,7 +307,7 @@ namespace MineSweeperTests
             game.FlagCoordinate();
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write("! ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => bus.Write("F ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Once);
         }
 
     }

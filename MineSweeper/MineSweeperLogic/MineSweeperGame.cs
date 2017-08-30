@@ -25,7 +25,6 @@ namespace MineSweeperLogic
         }
 
         private PositionInfo[,] _board;
-        private PositionInfo _coords;
         private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
@@ -125,10 +124,28 @@ namespace MineSweeperLogic
                 {
                     if (_board[x, y].IsOpen)
                     {
-                        if (x == PosX && y == PosY)
+                        if (x == PosX && y == PosY && !_board[x,y].HasMine)
                             _bus.Write("O ", ConsoleColor.DarkCyan);
+                        else if (_board[x, y].HasMine)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("¤ ", ConsoleColor.DarkCyan);
+                            else
+                                _bus.Write("¤ ");
+                        }
+                        else if (_board[x,y].IsFlagged)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("F ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("F ");
+                            }
+                        }
                         else
+                        {
                             _bus.Write("O ");
+                        }
                     }
                     else
                     {
@@ -137,21 +154,22 @@ namespace MineSweeperLogic
                         else
                             _bus.Write("? ");
                     }
+                    
                 }
+
                 _bus.WriteLine();
 
             }
           
             
         }
-        //bomb ¤
-        //unopened ?
+       
         #region MoveCursor Methods
 
         public void MoveCursorUp()
         {
             PosY -= 1;
-            if (PosY <= SizeY * 0)
+            if (PosY <= SizeY * 0 -1)
             {
                 PosY += 1;
             }
@@ -169,7 +187,7 @@ namespace MineSweeperLogic
         public void MoveCursorLeft()
         {
             PosX -= 1;
-            if (PosX <= SizeX * 0)
+            if (PosX <= SizeX * 0-1)
             {
                 PosX += 1;
             }
