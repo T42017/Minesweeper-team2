@@ -73,7 +73,7 @@ namespace MineSweeperTests
             game.ClickCoordinate();
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write("O ", ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Times(3));
+            A.CallTo(() => bus.Write("O " )).MustHaveHappened(Repeated.Exactly.Times(3));
         }
 
         [TestMethod]
@@ -289,11 +289,11 @@ namespace MineSweeperTests
             var game = new MineSweeperGame(2, 2, 0, bus);
 
             //Act
-            game.FlagCoordinate();
-            game.MoveCursorRight();
+            game.FlagCoordinate(); 
+            game.MoveCursorRight();            
             game.DrawBoard();
             //Assert
-            A.CallTo(() => bus.Write("F ",ConsoleColor.DarkCyan)).MustHaveHappened(Repeated.Exactly.Once);
+            A.CallTo(() => bus.Write("F ")).MustHaveHappened(Repeated.Exactly.Once);
         }
 
         [TestMethod]

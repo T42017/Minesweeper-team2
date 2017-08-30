@@ -14,8 +14,9 @@ namespace MineSweeperLogic
         public MineSweeperGame(int sizeX, int sizeY, int nrOfMines, IServiceBus bus)
         {
             _board = new PositionInfo[sizeX,sizeY];
-            this.NumberOfMines = nrOfMines;
+            NumberOfMines = nrOfMines;
             NumberOfOpenTiles = 0;
+            NumberOfFlagedTiles = 0;
             NumberOfTiles = sizeY * sizeX;
             PosX = 0;
             PosY = 0;
@@ -25,6 +26,7 @@ namespace MineSweeperLogic
         }
 
         private PositionInfo[,] _board;
+        private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int SizeX => _board.GetLength(0);
@@ -32,6 +34,7 @@ namespace MineSweeperLogic
         public int NumberOfMines { get; }
         public int NumberOfTiles { get; }
         public int NumberOfOpenTiles { get; private set; }
+        public int NumberOfFlagedTiles { get; private set; }
         public GameState State { get; private set; }
 
         public PositionInfo GetCoordinate(int x, int y)
@@ -44,7 +47,30 @@ namespace MineSweeperLogic
             var positionOfPlayer = GetCoordinate(PosX, PosY);
 
             if (!positionOfPlayer.IsOpen)
+            {
                 positionOfPlayer.IsFlagged ^= true;
+            }
+            
+        }
+
+        private void FloodFill(bool[,] escapes, int x, int y)
+         {
+            if (x < 0 || x >= SizeX) return;
+            if (y < 0 || y >= SizeY) return;
+            if (GetCoordinate(x, y).HasMine || escapes[x, y]) return;
+
+            escapes[x, y] = true;
+            GetCoordinate(x, y).IsOpen = true;
+            NumberOfOpenTiles++;
+            State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
+
+            if (GetCoordinate(x, y).NrOfNeighbours == 0)
+            {
+                FloodFill(escapes, x, y + 1);
+                FloodFill(escapes, x, y - 1);
+                FloodFill(escapes, x + 1, y);
+                FloodFill(escapes, x - 1, y);
+            }
         }
 
         public void ClickCoordinate()
@@ -62,12 +88,7 @@ namespace MineSweeperLogic
                 return;
             }
 
-            if (positionOfPlayer.IsOpen == false)
-            {
-                positionOfPlayer.IsOpen = true;
-                NumberOfOpenTiles++;
-                State = NumberOfTiles - NumberOfOpenTiles == NumberOfMines ? GameState.Won : GameState.Playing;
-            }
+            FloodFill(new bool[SizeX, SizeY], positionOfPlayer.X, positionOfPlayer.Y);
 
             if (positionOfPlayer.HasMine)
             {
@@ -110,7 +131,12 @@ namespace MineSweeperLogic
         public void PlacementOfMines ()
         {
             int mines = 0;
-            do
+            if (NumberOfMines <= 0)
+            {
+                return;
+            }
+
+            while (mines != NumberOfMines)
             {
                 var x = _bus.Next(SizeX);
                 var y = _bus.Next(SizeY);
@@ -119,7 +145,6 @@ namespace MineSweeperLogic
                 GetCoordinate(x, y).HasMine = true;
                 mines++;
             }
-            while (mines < NumberOfMines);
         }
 
         public PositionInfo[] GetCellsInfo(int x, int y)
@@ -144,8 +169,7 @@ namespace MineSweeperLogic
         {
             if (x < 0 || x >= SizeX ||
                 y < 0 || y >= SizeY)
-            {
-            }
+            {throw new Exception("");}
 
             var neighbours = GetCellsInfo(x, y);
             return neighbours.Count(neighbour => neighbour.HasMine);
@@ -159,7 +183,7 @@ namespace MineSweeperLogic
                 {
                     if (_board[x, y].IsOpen)
                     {
-                        if (x == PosX && y == PosY && !_board[x,y].HasMine && !_board[x,y].IsFlagged && _board[x,y].NrOfNeighbours != 1)
+                        if (x == PosX && y == PosY && !_board[x, y].HasMine && !_board[x, y].IsFlagged && _board[x, y].NrOfNeighbours == 0)
                             _bus.Write("O ", ConsoleColor.DarkCyan);
                         else if (_board[x, y].HasMine)
                         {
@@ -167,15 +191,6 @@ namespace MineSweeperLogic
                                 _bus.Write("¤ ", ConsoleColor.DarkCyan);
                             else
                                 _bus.Write("¤ ");
-                        }
-                        else if (_board[x,y].IsFlagged)
-                        {
-                            if (x == PosX && y == PosY)
-                                _bus.Write("F ", ConsoleColor.DarkCyan);
-                            else
-                            {
-                                _bus.Write("F ");
-                            }
                         }
                         else if (_board[x, y].NrOfNeighbours == 1)
                         {
@@ -254,11 +269,14 @@ namespace MineSweeperLogic
                             _bus.Write("O ");
                         }
                     }
+                    else if (_board[x, y].IsFlagged)
                     {
                         if (x == PosX && y == PosY)
                             _bus.Write("F ", ConsoleColor.DarkCyan);
                         else
+                        {
                             _bus.Write("F ");
+                        }
                     }
                     else
                     {
