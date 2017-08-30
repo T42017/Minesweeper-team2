@@ -92,7 +92,6 @@ namespace MineSweeperLogic
                         HasMine = false,
                         IsFlagged = false,
                         IsOpen = false,
-                        NrOfNeighbours = 1,
                         Y = y,
                         X = x
                     };
@@ -157,7 +156,7 @@ namespace MineSweeperLogic
                 {
                     if (_board[x, y].IsOpen)
                     {
-                        if (x == PosX && y == PosY && !_board[x,y].HasMine)
+                        if (x == PosX && y == PosY && !_board[x,y].HasMine && !_board[x,y].IsFlagged && _board[x,y].NrOfNeighbours != 1)
                             _bus.Write("O ", ConsoleColor.DarkCyan);
                         else if (_board[x, y].HasMine)
                         {
@@ -173,6 +172,78 @@ namespace MineSweeperLogic
                             else
                             {
                                 _bus.Write("F ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 1)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("1 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("1 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 2)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("2 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("2 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 3)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("3 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("3 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 4)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("4 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("4 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 5)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("5 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("5 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 6)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("6 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("6 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 7)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("7 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("7 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 8)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("8 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("8 ");
                             }
                         }
                         else
