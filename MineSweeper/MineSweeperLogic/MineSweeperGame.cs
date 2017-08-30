@@ -25,7 +25,6 @@ namespace MineSweeperLogic
         }
 
         private PositionInfo[,] _board;
-        private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
         public int SizeX => _board.GetLength(0);
@@ -42,6 +41,10 @@ namespace MineSweeperLogic
 
         public void FlagCoordinate()
         {
+            var positionOfPlayer = GetCoordinate(PosX, PosY);
+
+            if (!positionOfPlayer.IsOpen)
+                positionOfPlayer.IsFlagged ^= true;
         }
 
         public void ClickCoordinate()
@@ -251,6 +254,12 @@ namespace MineSweeperLogic
                             _bus.Write("O ");
                         }
                     }
+                    {
+                        if (x == PosX && y == PosY)
+                            _bus.Write("F ", ConsoleColor.DarkCyan);
+                        else
+                            _bus.Write("F ");
+                    }
                     else
                     {
                         if (x == PosX && y == PosY)
@@ -270,7 +279,7 @@ namespace MineSweeperLogic
         public void MoveCursorUp()
         {
             PosY -= 1;
-            if (PosY <= SizeY * 0 -1)
+            if (PosY <= SizeY * 0 - 1)
             {
                 PosY += 1;
             }
@@ -288,7 +297,7 @@ namespace MineSweeperLogic
         public void MoveCursorLeft()
         {
             PosX -= 1;
-            if (PosX <= SizeX * 0-1)
+            if (PosX <= SizeX * 0 - 1)
             {
                 PosX += 1;
             }
