@@ -99,6 +99,10 @@ namespace MineSweeperLogic
                 }
             }
             PlacementOfMines();
+            foreach (var cell in _board)
+            {
+                cell.NrOfNeighbours = GetNumberOfNeighbours(cell.X, cell.Y);
+            }
         }
 
         public void PlacementOfMines ()
@@ -114,6 +118,35 @@ namespace MineSweeperLogic
                 mines++;
             }
             while (mines < NumberOfMines);
+        }
+
+        public PositionInfo[] GetCellsInfo(int x, int y)
+        {
+            var cells = new List<PositionInfo>();
+
+            for (int X = x - 1; X <= x + 1; X++)
+            {
+                for (int Y = y - 1; Y <= y + 1; Y++)
+                {
+                    if (X == x && Y == y ||
+                        X < 0 || X >= SizeX ||
+                        Y < 0 || Y >= SizeY)
+                        continue;
+                    cells.Add(GetCoordinate(X, Y));
+                }
+            }
+            return cells.ToArray();
+        }
+
+        private int GetNumberOfNeighbours(int x, int y)
+        {
+            if (x < 0 || x >= SizeX ||
+                y < 0 || y >= SizeY)
+            {
+            }
+
+            var neighbours = GetCellsInfo(x, y);
+            return neighbours.Count(neighbour => neighbour.HasMine);
         }
 
         public void DrawBoard()
