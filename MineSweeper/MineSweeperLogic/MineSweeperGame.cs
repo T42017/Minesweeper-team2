@@ -186,12 +186,9 @@ namespace MineSweeperLogic
                             _bus.Write("? ", ConsoleColor.Cyan);
                         else
                             _bus.Write("? ");
-                    }
-                    
+                    }                 
                 }
-
                 _bus.WriteLine();
-
             }
           
             
