@@ -13,13 +13,7 @@ namespace MineSweeperLogic
 
         public MineSweeperGame(int sizeX, int sizeY, int nrOfMines, IServiceBus bus)
         {
-<<<<<<< HEAD
-            _bus = bus;
-            this.SizeY = sizeY;
-            this.SizeX = sizeX;
-=======
             _board = new PositionInfo[sizeX,sizeY];
->>>>>>> origin/feature-Filip
             this.NumberOfMines = nrOfMines;
             NumberOfOpenTiles = 0;
             NumberOfTiles = sizeY * sizeX;
@@ -32,9 +26,9 @@ namespace MineSweeperLogic
 
         private PositionInfo[,] _board;
 <<<<<<< HEAD
-        private PositionInfo _coords;
 =======
->>>>>>> origin/feature-Filip
+        private PositionInfo _coords;
+>>>>>>> origin/feature-Edvin
         private IServiceBus _bus;
         public int PosX { get; set; }
         public int PosY { get; set; }
@@ -52,6 +46,10 @@ namespace MineSweeperLogic
 
         public void FlagCoordinate()
         {
+            var positionOfPlayer = GetCoordinate(PosX, PosY);
+
+            if (!positionOfPlayer.IsOpen)
+                positionOfPlayer.IsFlagged ^= true;
         }
 
         public void ClickCoordinate()
@@ -92,10 +90,6 @@ namespace MineSweeperLogic
         public void ResetBoard()
         {
             State = GameState.Playing;
-<<<<<<< HEAD
-            _board = new PositionInfo[SizeX, SizeY];
-=======
->>>>>>> origin/feature-Filip
 
             for (int x = 0; x < SizeX; x++)
             {
@@ -106,13 +100,16 @@ namespace MineSweeperLogic
                         HasMine = false,
                         IsFlagged = false,
                         IsOpen = false,
-                        NrOfNeighbours = 1,
                         Y = y,
                         X = x
                     };
                 }
             }
             PlacementOfMines();
+            foreach (var cell in _board)
+            {
+                cell.NrOfNeighbours = GetNumberOfNeighbours(cell.X, cell.Y);
+            }
         }
 
         public void PlacementOfMines ()
@@ -130,6 +127,35 @@ namespace MineSweeperLogic
             while (mines < NumberOfMines);
         }
 
+        public PositionInfo[] GetCellsInfo(int x, int y)
+        {
+            var cells = new List<PositionInfo>();
+
+            for (int X = x - 1; X <= x + 1; X++)
+            {
+                for (int Y = y - 1; Y <= y + 1; Y++)
+                {
+                    if (X == x && Y == y ||
+                        X < 0 || X >= SizeX ||
+                        Y < 0 || Y >= SizeY)
+                        continue;
+                    cells.Add(GetCoordinate(X, Y));
+                }
+            }
+            return cells.ToArray();
+        }
+
+        private int GetNumberOfNeighbours(int x, int y)
+        {
+            if (x < 0 || x >= SizeX ||
+                y < 0 || y >= SizeY)
+            {
+            }
+
+            var neighbours = GetCellsInfo(x, y);
+            return neighbours.Count(neighbour => neighbour.HasMine);
+        }
+
         public void DrawBoard()
         {
             for (int y = 0; y < SizeX; y++)
@@ -138,10 +164,107 @@ namespace MineSweeperLogic
                 {
                     if (_board[x, y].IsOpen)
                     {
-                        if (x == PosX && y == PosY)
+                        if (x == PosX && y == PosY && !_board[x,y].HasMine && !_board[x,y].IsFlagged && _board[x,y].NrOfNeighbours != 1)
                             _bus.Write("O ", ConsoleColor.DarkCyan);
+                        else if (_board[x, y].HasMine)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("¤ ", ConsoleColor.DarkCyan);
+                            else
+                                _bus.Write("¤ ");
+                        }
+                        else if (_board[x,y].IsFlagged)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("F ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("F ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 1)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("1 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("1 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 2)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("2 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("2 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 3)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("3 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("3 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 4)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("4 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("4 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 5)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("5 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("5 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 6)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("6 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("6 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 7)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("7 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("7 ");
+                            }
+                        }
+                        else if (_board[x, y].NrOfNeighbours == 8)
+                        {
+                            if (x == PosX && y == PosY)
+                                _bus.Write("8 ", ConsoleColor.DarkCyan);
+                            else
+                            {
+                                _bus.Write("8 ");
+                            }
+                        }
                         else
+                        {
                             _bus.Write("O ");
+                        }
+                    }
+                    else if (_board[x,y].IsFlagged)
+                    {
+                        if (x == PosX && y == PosY)
+                            _bus.Write("F ", ConsoleColor.DarkCyan);
+                        else
+                            _bus.Write("F ");
                     }
                     else
                     {
@@ -149,22 +272,24 @@ namespace MineSweeperLogic
                             _bus.Write("? ", ConsoleColor.Cyan);
                         else
                             _bus.Write("? ");
-                    }
+                    }                 
                 }
                 _bus.WriteLine();
-
             }
           
             
         }
-        //bomb ¤
-        //unopened ?
+       
         #region MoveCursor Methods
 
         public void MoveCursorUp()
         {
             PosY -= 1;
-            if (PosY <= SizeY * 0)
+<<<<<<< HEAD
+            if (PosY <= SizeY * 0 -1)
+=======
+            if (PosY <= SizeY * 0 - 1)
+>>>>>>> origin/feature-Edvin
             {
                 PosY += 1;
             }
@@ -182,7 +307,11 @@ namespace MineSweeperLogic
         public void MoveCursorLeft()
         {
             PosX -= 1;
-            if (PosX <= SizeX * 0)
+<<<<<<< HEAD
+            if (PosX <= SizeX * 0-1)
+=======
+            if (PosX <= SizeX * 0 - 1)
+>>>>>>> origin/feature-Edvin
             {
                 PosX += 1;
             }
